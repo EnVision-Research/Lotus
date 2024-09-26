@@ -30,4 +30,4 @@ We present **Lotus**, a diffusion-based visual foundation model for dense geomet
 
 ## 📢 News
 
-2024-09-26: [Paper](https://arxiv.org/abs/xxxx.xxxxx) released, the code will be available soon (ideally before 2024-10-07).
+2024-09-26: [Paper](https://arxiv.org/abs/xxxx.xxxxx) released, the code & demo will be available soon (ideally before 2024-10-07).
