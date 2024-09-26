@@ -1,17 +1,33 @@
-# Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Predictionn
+# <img src="assets/badges/lotus_icon.png" alt="lotus" style="height:1.5em; vertical-align:middle;"/>Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Predictionn
 
-[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b)](https://arxiv.org/abs/xxxx.xxxxx)
+[![Paper](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
+[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/xxxx.xxxxx)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/haodongli/Lotus)
 
-[Bingxin Ke](http://www.kebingxin.com/),
-[Anton Obukhov](https://www.obukhov.ai/),
-[Shengyu Huang](https://shengyuh.github.io/),
-[Nando Metzger](https://nandometzger.github.io/),
-[Rodrigo Caye Daudt](https://rcdaudt.github.io/),
-[Konrad Schindler](https://scholar.google.com/citations?user=FZuNgqIAAAAJ&hl=en )
+[Jing He](https://scholar.google.com/citations?hl=en&user=RsLS11MAAAAJ)<sup>1<span style="color:red;">&#10033;</span></sup>,
+[Haodong Li](https://haodong-li.com/)<sup>1<span style="color:red;">&#10033;</span></sup>,
+[Wei Yin](https://yvanyin.net/)<sup>2</sup>,
+[Yixun Liang](https://yixunliang.github.io/)<sup>1</sup>,
+[Leheng Li](https://len-li.github.io/)<sup>1</sup>,
+[Kaiqiang Zhou]()<sup>3</sup>,
+[Hongbo Zhang]()<sup>3</sup>,
+[Bingbing Liu](https://scholar.google.com/citations?user=-rCulKwAAAAJ&hl=en)<sup>3</sup>,
+[Ying-Cong Chen](https://www.yingcong.me/)<sup>1,4&#9993;</sup>
 
-We present Marigold, a diffusion model, and associated fine-tuning protocol for monocular depth estimation. Its core principle is to leverage the rich visual knowledge stored in modern generative image models. Our model, derived from Stable Diffusion and fine-tuned with synthetic data, can zero-shot transfer to unseen data, offering state-of-the-art monocular depth estimation results.
+<span class="author-block"><sup>1</sup>HKUST(GZ)</span>
+<span class="author-block"><sup>2</sup>University of Adelaide</span>
+<span class="author-block"><sup>3</sup>Noah's Ark Lab</span>
+<span class="author-block"><sup>4</sup>HKUST</span><br>
+<span class="author-block">
+    <sup style="color:red;">&#10033;</sup>Both authors contributed equally (order randomized).
+    <sup>&#9993;</sup>Corresponding author.
+</span>
 
-![teaser](assets/teaser.png)
+![teaser](assets/badges/teaser_1.jpg)
+![teaser](assets/badges/teaser_2.jpg)
+
+We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
+
+2024-09-26: [Paper](https://arxiv.org/abs/xxxx.xxxxx) released, the code will be available soon (ideally before 2024-10-07).
