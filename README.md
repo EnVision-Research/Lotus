@@ -1,4 +1,4 @@
-# <img src="assets/badges/lotus_icon.png" alt="lotus" style="height:1.5em; vertical-align:middle;"/>Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Predictionn
+# <img src="assets/badges/lotus_icon.png" alt="lotus" style="height:1em; vertical-align:bottom;"/> Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Predictionn
 
 [![Paper](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
 [![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/xxxx.xxxxx)
