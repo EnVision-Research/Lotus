@@ -1,7 +1,7 @@
 # <img src="assets/badges/lotus_icon.png" alt="lotus" style="height:1em; vertical-align:bottom;"/> Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Predictionn
 
 [![Paper](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
-[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/xxxx.xxxxx)
+[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2409.18124)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/haodongli/Lotus)
 
 [Jing He](https://scholar.google.com/citations?hl=en&user=RsLS11MAAAAJ)<sup>1<span style="color:red;">&#10033;</span></sup>,
@@ -30,4 +30,4 @@ We present **Lotus**, a diffusion-based visual foundation model for dense geomet
 
 ## 📢 News
 
-2024-09-26: [Paper](https://arxiv.org/abs/xxxx.xxxxx) released, the code & demo will be available soon (ideally before 2024-10-07).
+2024-09-26: [Paper](https://arxiv.org/abs/2409.18124) released, the code & demo will be available soon (ideally before 2024-10-07).
