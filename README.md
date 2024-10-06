@@ -20,7 +20,7 @@
 <span class="author-block"><sup>3</sup>Noah's Ark Lab</span>
 <span class="author-block"><sup>4</sup>HKUST</span><br>
 <span class="author-block">
-    <sup style="color:red;">&#10033;</sup>Both authors contributed equally (order randomized).
+    <sup style="color:red;">&#10033;</sup>**Both authors contributed equally (order randomized).**
     <sup>&#9993;</sup>Corresponding author.
 </span>
 
