@@ -1,9 +1,9 @@
 # <img src="assets/badges/lotus_icon.png" alt="lotus" style="height:1em; vertical-align:bottom;"/> Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Prediction
 
-[![Paper](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
+[![Page](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
 [![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2409.18124)
-[![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/haodongli/Lotus)
-[![HuggingFace Model](https://img.shields.io/badge/🤗%20HuggingFace-Model-green)](https://huggingface.co/jingheya/lotus-depth-g-v1-0)
+[![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Depth)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Depth)
+[![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Normal)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Normal)
 
 [Jing He](https://scholar.google.com/citations?hl=en&user=RsLS11MAAAAJ)<sup>1<span style="color:red;">&#10033;</span></sup>,
 [Haodong Li](https://haodong-li.com/)<sup>1<span style="color:red;">&#10033;</span></sup>,
@@ -30,53 +30,58 @@
 We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
-- 2024-10-05: The inference code (this repository) and [![HuggingFace Model](https://img.shields.io/badge/🤗%20HuggingFace-Model-green)](https://huggingface.co/jingheya/lotus-depth-g-v1-0) are now available. <br>
+- 2024-10-05: The inference code is now available. <br>
 - 2024-09-26: [Paper](https://arxiv.org/abs/2409.18124) released. <br>
 
-
 ## 🛠️ Setup
-The inference code was tested on: 
-- Ubuntu 20.04 LTS, Python 3.9, CUDA 12.3, NVIDIA A800-SXM4-80GB.  
+This installation was tested on: Ubuntu 20.04 LTS, Python 3.9, CUDA 12.3, NVIDIA A800-SXM4-80GB.  
 
-### 1. Repository
-Clone the repository (requires git):
+1. Clone the repository (requires git):
 ```
 git clone https://github.com/EnVision-Research/Lotus.git
 cd Lotus
 ```
-### 2. Dependencies
-Install dependencies (requires conda and pip):
+
+2. Install dependencies (requires conda):
 ```
-conda create -n lotus python=3.9
+conda create -n lotus python=3.9 -y
 conda activate lotus
 pip install -r requirements.txt 
 ```
 
 ## 🕹️ Usage
 ### Testing on your images
-1. Place your images in a directory, for example, under `input/in-the-wild_example` (where we have prepared several examples). 
+1. Place your images in a directory, for example, under `assets/in-the-wild_example` (where we have prepared several examples). 
 2. Run the inference command: `bash infer.sh`. 
 
 ### Evaluation on benchmark datasets
 1. Prepare benchmark datasets:
-    - For depth estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-))：
+    - For **depth** estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-))：
     ```
     cd datasets/eval/depth/
     
     wget -r -np -nH --cut-dirs=4 -R "index.html*" -P . https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/
     ```
-    - For normal estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
+    - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
 2. Run the evaluation command: `bash eval.sh`
 
+### Choose your model
+We offer four models in total, here are the corresponding configurations:
+|CHECKPOINT_DIR |TASK_NAME |MODE |
+|:--:|:--:|:--:|
+| `jingheya/lotus-depth-g-v1-0`| `depth`| `generation`|
+| `jingheya/lotus-depth-d-v1-0`| `depth`|`regression` |
+| `jingheya/lotus-normal-g-v1-0`|`normal` | `generation`|
+| `jingheya/lotus-normal-d-v1-0`|`normal` |`regression` |
 
 ## 🎓 Citation
-If you find our work useful in your research please consider citing our paper:
+If you find our work useful in your research, please consider citing our paper:
 ```bibtex
 @article{he2024lotus,
     title={Lotus: Diffusion-based Visual Foundation Model for High-quality Dense Prediction},
     author={He, Jing and Li, Haodong and Yin, Wei and Liang, Yixun and Li, Leheng and Zhou, Kaiqiang and Liu, Hongbo and Liu, Bingbing and Chen, Ying-Cong},
     journal={arXiv preprint arXiv:2409.18124},
     year={2024}
-    }
+}
 ```

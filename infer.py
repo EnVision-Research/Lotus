@@ -1,4 +1,3 @@
-# from utils.args import parse_args
 import logging
 import os
 import argparse
@@ -54,7 +53,7 @@ def parse_args():
     parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
-    
+
     # inference settings
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
     parser.add_argument(
@@ -68,7 +67,7 @@ def parse_args():
         action="store_true",
         help="Run with half-precision (16-bit float), might lead to suboptimal result.",
     )
-    
+
     args = parser.parse_args()
 
     return args
@@ -76,7 +75,7 @@ def parse_args():
 def main():
     logging.basicConfig(level=logging.INFO)
     logging.info(f"Run inference...")
-    
+
     args = parse_args()
 
     # -------------------- Preparation --------------------
@@ -114,7 +113,7 @@ def main():
     test_images = sorted(test_images)
     print('==> There are', len(test_images), 'images for validation.')
     # -------------------- Model --------------------
-    
+
     if args.mode == 'generation':
         pipeline = LotusGPipeline.from_pretrained(
             args.pretrained_model_name_or_path,
@@ -134,7 +133,6 @@ def main():
 
     if args.enable_xformers_memory_efficient_attention:
         pipeline.enable_xformers_memory_efficient_attention()
-
 
     if args.seed is None:
         generator = None
