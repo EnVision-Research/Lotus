@@ -180,7 +180,7 @@ def main():
                 eval_dir = os.path.join(args.output_dir, args.task_name, dataset_name)
                 test_dataset_config = os.path.join(test_data_dir, config_path)     
                 metric_tracker = evaluation_depth(eval_dir, test_dataset_config, test_data_dir, eval_mode="generate_prediction",
-                            gen_prediction=gen_depth, pipeline=pipeline)
+                                                  gen_prediction=gen_depth, pipeline=pipeline)
                 print(dataset_name,',', 'abs_relative_difference: ', metric_tracker.result()['abs_relative_difference'], 'delta1_acc: ', metric_tracker.result()['delta1_acc'])
         elif args.task_name == 'normal':
             test_data_dir = os.path.join(args.base_test_data_dir, args.task_name)
@@ -188,7 +188,7 @@ def main():
             eval_datasets = [('nyuv2', 'test'), ('scannet', 'test'), ('ibims', 'ibims'), ('sintel', 'sintel')]
             eval_dir = os.path.join(args.output_dir, args.task_name)
             evaluation_normal(eval_dir, test_data_dir, dataset_split_path, eval_mode="generate_prediction", 
-                                            gen_prediction=gen_normal, pipeline=pipeline, eval_datasets=eval_datasets)
+                              gen_prediction=gen_normal, pipeline=pipeline, eval_datasets=eval_datasets)
         else:
             raise ValueError(f"Not support predicting {args.task_name} yet. ")
         
