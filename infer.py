@@ -72,6 +72,7 @@ def parse_args():
 
     return args
 
+
 def main():
     logging.basicConfig(level=logging.INFO)
     logging.info(f"Run inference...")
@@ -182,6 +183,7 @@ def main():
                 np.save(os.path.join(output_dir_npy, f'{save_file_name}.npy'), output_npy)
 
     print('==> Inference is done. \n==> Results saved to:', args.output_dir)
+
 
 if __name__ == '__main__':
     main()
