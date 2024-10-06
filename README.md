@@ -31,7 +31,7 @@ We present **Lotus**, a diffusion-based visual foundation model for dense geomet
 
 ## 📢 News
 - 2024-10-06: The demos are now available ([Depth](https://huggingface.co/spaces/haodongli/Lotus_Depth) & [Normal](https://huggingface.co/spaces/haodongli/Lotus_Normal)). Video depth & normal predictions are also supported. Please have a try! <br>
-- 2024-10-05: The inference code is now available! <br>
+- 2024-10-05: The inference code is now available. [Paper](https://arxiv.org/abs/2409.18124) is updated to v2. <br>
 - 2024-09-26: [Paper](https://arxiv.org/abs/2409.18124) released. <br>
 
 ## 🛠️ Setup
