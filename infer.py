@@ -1,4 +1,3 @@
-# from utils.args import parse_args
 import logging
 import os
 import argparse
@@ -53,7 +52,7 @@ def parse_args():
     parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
-    
+
     # inference settings
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
     parser.add_argument(
@@ -67,7 +66,7 @@ def parse_args():
         action="store_true",
         help="Run with half-precision (16-bit float), might lead to suboptimal result.",
     )
-    
+
     args = parser.parse_args()
 
     return args
@@ -75,7 +74,7 @@ def parse_args():
 def main():
     logging.basicConfig(level=logging.INFO)
     logging.info(f"Run inference...")
-    
+
     args = parse_args()
 
     # -------------------- Preparation --------------------
@@ -113,7 +112,7 @@ def main():
     test_images = sorted(test_images)
     print('==> There are', len(test_images), 'images for validation.')
     # -------------------- Model --------------------
-    
+
     if args.mode == 'generation':
         pipeline = LotusGPipeline.from_pretrained(
             args.pretrained_model_name_or_path,
@@ -133,7 +132,6 @@ def main():
 
     if args.enable_xformers_memory_efficient_attention:
         pipeline.enable_xformers_memory_efficient_attention()
-
 
     if args.seed is None:
         generator = None
@@ -164,20 +162,19 @@ def main():
                 timesteps=[args.timestep],
                 task_emb=task_emb,
                 ).images[0]
-            
+
             # Post-process the prediction
             save_file_name = os.path.basename(test_images[i])[:-4]
             if args.task_name == 'depth':
                 output_npy = pred.mean(axis=-1)
                 output_color = colorize_depth_map(output_npy)
-                
             else:
                 output_npy = pred
                 output_color = Image.fromarray((output_npy * 255).astype(np.uint8))
-            
+
             output_color.save(os.path.join(output_dir_color, f'{save_file_name}.png'))
             np.save(os.path.join(output_dir_npy, f'{save_file_name}.npy'), output_npy)
-    
+
     print('==> Inference is done. \n==> Results saved to:', args.output_dir)
 
 if __name__ == '__main__':

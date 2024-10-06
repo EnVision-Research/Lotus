@@ -49,7 +49,7 @@ def parse_args():
     parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
-    
+
     # inference settings
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
     parser.add_argument(
@@ -92,7 +92,7 @@ def main():
         logging.info(f"Running with half precision ({dtype}).")
     else:
         dtype = torch.float32
-    
+
     # -------------------- Device --------------------
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -144,7 +144,7 @@ def main():
                             ).images[0]
             pred_depth = pred_depth.mean(axis=-1) # [0,1]
         return pred_depth
-    
+
     def gen_normal(img, pipe, prompt="", num_inference_steps=50):
         if torch.backends.mps.is_available():
                 autocast_ctx = nullcontext()
