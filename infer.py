@@ -4,6 +4,7 @@ import os
 import argparse
 from pathlib import Path
 from PIL import Image
+from contextlib import nullcontext
 
 import numpy as np
 import torch
@@ -143,40 +144,45 @@ def main():
     # -------------------- Inference and saving --------------------
     with torch.no_grad():
         for i in tqdm(range(len(test_images))):
-            # Preprocess validation image
-            test_image = Image.open(test_images[i]).convert('RGB')
-            test_image = np.array(test_image).astype(np.float32)
-            test_image = torch.tensor(test_image).permute(2,0,1).unsqueeze(0)
-            test_image = test_image / 127.5 - 1.0 
-            test_image = test_image.to(device)
-
-            task_emb = torch.tensor([1, 0]).float().unsqueeze(0).repeat(1, 1).to(device)
-            task_emb = torch.cat([torch.sin(task_emb), torch.cos(task_emb)], dim=-1).repeat(1, 1)
-
-            # Run
-            pred = pipeline(
-                rgb_in=test_image, 
-                prompt='', 
-                num_inference_steps=1, 
-                generator=generator, 
-                # guidance_scale=0,
-                output_type='np',
-                timesteps=[args.timestep],
-                task_emb=task_emb,
-                ).images[0]
-            
-            # Post-process the prediction
-            save_file_name = os.path.basename(test_images[i])[:-4]
-            if args.task_name == 'depth':
-                output_npy = pred.mean(axis=-1)
-                output_color = colorize_depth_map(output_npy)
-                
+            if torch.backends.mps.is_available():
+                autocast_ctx = nullcontext()
             else:
-                output_npy = pred
-                output_color = Image.fromarray((output_npy * 255).astype(np.uint8))
-            
-            output_color.save(os.path.join(output_dir_color, f'{save_file_name}.png'))
-            np.save(os.path.join(output_dir_npy, f'{save_file_name}.npy'), output_npy)
+                autocast_ctx = torch.autocast(pipeline.device.type)
+            with autocast_ctx:
+                # Preprocess validation image
+                test_image = Image.open(test_images[i]).convert('RGB')
+                test_image = np.array(test_image).astype(np.float32)
+                test_image = torch.tensor(test_image).permute(2,0,1).unsqueeze(0)
+                test_image = test_image / 127.5 - 1.0 
+                test_image = test_image.to(device)
+
+                task_emb = torch.tensor([1, 0]).float().unsqueeze(0).repeat(1, 1).to(device)
+                task_emb = torch.cat([torch.sin(task_emb), torch.cos(task_emb)], dim=-1).repeat(1, 1)
+
+                # Run
+                pred = pipeline(
+                    rgb_in=test_image, 
+                    prompt='', 
+                    num_inference_steps=1, 
+                    generator=generator, 
+                    # guidance_scale=0,
+                    output_type='np',
+                    timesteps=[args.timestep],
+                    task_emb=task_emb,
+                    ).images[0]
+                
+                # Post-process the prediction
+                save_file_name = os.path.basename(test_images[i])[:-4]
+                if args.task_name == 'depth':
+                    output_npy = pred.mean(axis=-1)
+                    output_color = colorize_depth_map(output_npy)
+                    
+                else:
+                    output_npy = pred
+                    output_color = Image.fromarray((output_npy * 255).astype(np.uint8))
+                
+                output_color.save(os.path.join(output_dir_color, f'{save_file_name}.png'))
+                np.save(os.path.join(output_dir_npy, f'{save_file_name}.npy'), output_npy)
     
     print('==> Inference is done. \n==> Results saved to:', args.output_dir)
 
