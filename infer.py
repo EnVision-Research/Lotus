@@ -182,6 +182,8 @@ def main():
                 output_color.save(os.path.join(output_dir_color, f'{save_file_name}.png'))
                 np.save(os.path.join(output_dir_npy, f'{save_file_name}.npy'), output_npy)
 
+            torch.cuda.empty_cache()
+            
     print('==> Inference is done. \n==> Results saved to:', args.output_dir)
 
 
