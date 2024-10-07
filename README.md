@@ -35,7 +35,7 @@ We present **Lotus**, a diffusion-based visual foundation model for dense geomet
 - 2024-09-26: [Paper](https://arxiv.org/abs/2409.18124) released. <br>
 
 ## 🛠️ Setup
-This installation was tested on: Ubuntu 20.04 LTS, Python 3.9, CUDA 12.3, NVIDIA A800-SXM4-80GB.  
+This installation was tested on: Ubuntu 20.04 LTS, Python 3.10, CUDA 12.3, NVIDIA A800-SXM4-80GB.  
 
 1. Clone the repository (requires git):
 ```
@@ -45,10 +45,23 @@ cd Lotus
 
 2. Install dependencies (requires conda):
 ```
-conda create -n lotus python=3.9 -y
+conda create -n lotus python=3.10 -y
 conda activate lotus
 pip install -r requirements.txt 
 ```
+
+## 🤗 Gradio Demo
+
+1. Online demo: [Depth](https://huggingface.co/spaces/haodongli/Lotus_Depth) & [Normal](https://huggingface.co/spaces/haodongli/Lotus_Normal)
+2. Local demo
+- For **depth** estimation, run:
+    ```
+    python app.py depth
+    ```
+- For **normal** estimation, run:
+    ```
+    python app.py normal
+    ```
 
 ## 🕹️ Usage
 ### Testing on your images
@@ -57,13 +70,13 @@ pip install -r requirements.txt
 
 ### Evaluation on benchmark datasets
 1. Prepare benchmark datasets:
-    - For **depth** estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-))：
+- For **depth** estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-))：
     ```
     cd datasets/eval/depth/
     
     wget -r -np -nH --cut-dirs=4 -R "index.html*" -P . https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/
     ```
-    - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
+- For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
 2. Run the evaluation command: `bash eval.sh`
 
