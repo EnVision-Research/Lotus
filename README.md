@@ -4,6 +4,7 @@
 [![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2409.18124)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Depth)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Depth)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Normal)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Normal)
+[![Replicate](https://replicate.com/chenxwh/lotus/badge?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQAAAADcA+lXAAAAgUlEQVR4Ae3MURFAABQAsHcniCj6txBBAfgGAMAWYPE9AAAAAAAAAABZPW1DIBAIBAKBII8dBAKBQCAYCJJ6xI2BQCAQCASCKgb8OhAIBAJBWnc8IBAIBAKBQFBEn0AgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAj2AwAAAAAAAABoAC8mT5WJjIdGAAAAAElFTkSuQmCC)](https://replicate.com/chenxwh/lotus)
 
 [Jing He](https://scholar.google.com/citations?hl=en&user=RsLS11MAAAAJ)<sup>1<span style="color:red;">&#10033;</span></sup>,
 [Haodong Li](https://haodong-li.com/)<sup>1<span style="color:red;">&#10033;</span></sup>,
