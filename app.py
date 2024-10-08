@@ -25,7 +25,7 @@ import sys
 transformers.utils.move_cache()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def infer_pipe(pipe, image_input, task_name, seed, device):
+def infer_pipe(pipe, test_image, task_name, seed, device):
     if seed is None:
         generator = None
     else:
@@ -37,7 +37,6 @@ def infer_pipe(pipe, image_input, task_name, seed, device):
         autocast_ctx = torch.autocast(pipe.device.type)
     with autocast_ctx:
 
-        test_image = Image.open(image_input).convert('RGB')
         test_image = np.array(test_image).astype(np.float16)
         test_image = torch.tensor(test_image).permute(2,0,1).unsqueeze(0)
         test_image = test_image / 127.5 - 1.0 
@@ -68,7 +67,7 @@ def infer_pipe(pipe, image_input, task_name, seed, device):
 
     return output_color
 
-def lotus_video(input_video, task_name, seed, device):
+def load_pipe(task_name):
     if task_name == 'depth':
         model_g = 'jingheya/lotus-depth-g-v1-0'
         model_d = 'jingheya/lotus-depth-d-v1-1'
@@ -89,7 +88,11 @@ def lotus_video(input_video, task_name, seed, device):
     pipe_d.to(device)
     pipe_g.set_progress_bar_config(disable=True)
     pipe_d.set_progress_bar_config(disable=True)
-    # logging.info(f"Successfully loading pipeline from {model_g} and {model_d}.")
+
+    return pipe_g, pipe_d
+
+def lotus_video(input_video, task_name, seed, device):
+    pipe_g, pipe_d = load_pipe(task_name)
     
     # load the video and split it into frames
     cap = cv2.VideoCapture(input_video)
@@ -100,93 +103,21 @@ def lotus_video(input_video, task_name, seed, device):
             break
         frames.append(frame)
     cap.release()
-    # logging.info(f"There are {len(frames)} frames in the video.")
-
-    if seed is None:
-        generator = None
-    else:
-        generator = torch.Generator(device=device).manual_seed(seed)
-
-    task_emb = torch.tensor([1, 0]).float().unsqueeze(0).repeat(1, 1).to(device)
-    task_emb = torch.cat([torch.sin(task_emb), torch.cos(task_emb)], dim=-1).repeat(1, 1)
 
     output_g = []
     output_d = []
     for frame in frames:
-        if torch.backends.mps.is_available():
-            autocast_ctx = nullcontext()
-        else:
-            autocast_ctx = torch.autocast(pipe_g.device.type)
-        with autocast_ctx:
-            test_image = frame
-            test_image = np.array(test_image).astype(np.float16)
-            test_image = torch.tensor(test_image).permute(2,0,1).unsqueeze(0)
-            test_image = test_image / 127.5 - 1.0 
-            test_image = test_image.to(device)
-
-            # Run
-            pred_g = pipe_g(
-                rgb_in=test_image, 
-                prompt='', 
-                num_inference_steps=1, 
-                generator=generator, 
-                # guidance_scale=0,
-                output_type='np',
-                timesteps=[999],
-                task_emb=task_emb,
-                ).images[0]
-            pred_d = pipe_d(
-                rgb_in=test_image, 
-                prompt='', 
-                num_inference_steps=1, 
-                generator=generator, 
-                # guidance_scale=0,
-                output_type='np',
-                timesteps=[999],
-                task_emb=task_emb,
-                ).images[0]
-
-            # Post-process the prediction
-            if task_name == 'depth':
-                output_npy_g = pred_g.mean(axis=-1)
-                output_color_g = colorize_depth_map(output_npy_g)
-                output_npy_d = pred_d.mean(axis=-1)
-                output_color_d = colorize_depth_map(output_npy_d)
-            else:
-                output_npy_g = pred_g
-                output_color_g = Image.fromarray((output_npy_g * 255).astype(np.uint8))
-                output_npy_d = pred_d
-                output_color_d = Image.fromarray((output_npy_d * 255).astype(np.uint8))
-            
-            output_g.append(output_color_g)
-            output_d.append(output_color_d)
+        output_frame_g = infer_pipe(pipe_g, frame, task_name, seed, device)
+        output_frame_d = infer_pipe(pipe_d, frame, task_name, seed, device)
+        output_g.append(output_frame_g)
+        output_d.append(output_frame_d)
 
     return output_g, output_d
 
 def lotus(image_input, task_name, seed, device):
-    if task_name == 'depth':
-        model_g = 'jingheya/lotus-depth-g-v1-0'
-        model_d = 'jingheya/lotus-depth-d-v1-1'
-    else:
-        model_g = 'jingheya/lotus-normal-g-v1-0'
-        model_d = 'jingheya/lotus-normal-d-v1-0'
-
-    dtype = torch.float16
-    pipe_g = LotusGPipeline.from_pretrained(
-        model_g,
-        torch_dtype=dtype,
-    )
-    pipe_d = LotusDPipeline.from_pretrained(
-        model_d,
-        torch_dtype=dtype,
-    )
-    pipe_g.to(device)
-    pipe_d.to(device)
-    pipe_g.set_progress_bar_config(disable=True)
-    pipe_d.set_progress_bar_config(disable=True)
-    # logging.info(f"Successfully loading pipeline from {model_g} and {model_d}.")
-    output_g = infer_pipe(pipe_g, image_input, task_name, seed, device)
-    output_d = infer_pipe(pipe_d, image_input, task_name, seed, device)
+    pipe_g, pipe_d = load_pipe(task_name)
+    output_g = infer_pipe(pipe_g, Image.open(image_input).convert('RGB'), task_name, seed, device)
+    output_d = infer_pipe(pipe_d, Image.open(image_input).convert('RGB'), task_name, seed, device)
     return output_g, output_d
 
 def infer(path_input, seed):
