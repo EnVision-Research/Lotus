@@ -86,10 +86,10 @@ pip install -r requirements.txt
 We offer four models in total, here are the corresponding configurations:
 |CHECKPOINT_DIR |TASK_NAME |MODE |
 |:--:|:--:|:--:|
-| [jingheya/lotus-depth-g-v1-0](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`|
-| [jingheya/lotus-depth-d-v1-0](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` |
-| [jingheya/lotus-normal-g-v1-0](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation`|
-| [jingheya/lotus-normal-d-v1-0](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` |
+| [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`|
+| [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` |
+| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation`|
+| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` |
 
 ## 🎓 Citation
 If you find our work useful in your research, please consider citing our paper:
