@@ -71,7 +71,7 @@ def infer_pipe(pipe, image_input, task_name, seed, device):
 def lotus_video(input_video, task_name, seed, device):
     if task_name == 'depth':
         model_g = 'jingheya/lotus-depth-g-v1-0'
-        model_d = 'jingheya/lotus-depth-d-v1-0'
+        model_d = 'jingheya/lotus-depth-d-v1-1'
     else:
         model_g = 'jingheya/lotus-normal-g-v1-0'
         model_d = 'jingheya/lotus-normal-d-v1-0'
