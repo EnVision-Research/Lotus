@@ -2,7 +2,6 @@
 
 [![Page](https://img.shields.io/badge/Project-Website-pink?logo=googlechrome&logoColor=white)](https://lotus3d.github.io/)
 [![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2409.18124)
-[![HuggingFace Models](https://img.shields.io/badge/%F0%9F%A4%97-Models-yellow)](https://huggingface.co/models?search=jingheya/lotus)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Depth)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Depth)
 [![HuggingFace Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo%20(Normal)-yellow)](https://huggingface.co/spaces/haodongli/Lotus_Normal)
 [![Replicate](https://replicate.com/chenxwh/lotus/badge?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQAAAADcA+lXAAAAgUlEQVR4Ae3MURFAABQAsHcniCj6txBBAfgGAMAWYPE9AAAAAAAAAABZPW1DIBAIBAKBII8dBAKBQCAYCJJ6xI2BQCAQCASCKgb8OhAIBAJBWnc8IBAIBAKBQFBEn0AgEAgEAoFAIBAIBAKBQCAQCAQCgUAgEAj2AwAAAAAAAABoAC8mT5WJjIdGAAAAAElFTkSuQmCC)](https://replicate.com/chenxwh/lotus)
