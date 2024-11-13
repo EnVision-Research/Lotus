@@ -44,12 +44,16 @@ def concatenate_images(*image_lists):
     return new_image
 
 
-def colorize_depth_map(depth, mask=None):
+def colorize_depth_map(depth, mask=None, reverse_color=False):
     cm = matplotlib.colormaps["Spectral"]
     # normalize
     depth = ((depth - depth.min()) / (depth.max() - depth.min()))
     # colorize
-    img_colored_np = cm(depth, bytes=False)[:, :, 0:3] # (h,w,3)
+    if reverse_color:
+        img_colored_np = cm(1 - depth, bytes=False)[:, :, 0:3]  # Invert the depth values before applying colormap
+    else:
+        img_colored_np = cm(depth, bytes=False)[:, :, 0:3] # (h,w,3)
+
     depth_colored = (img_colored_np * 255).astype(np.uint8) 
     if mask is not None:
         masked_image = np.zeros_like(depth_colored)

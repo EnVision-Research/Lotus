@@ -1,7 +1,7 @@
 
 export CUDA=0
 
-export CHECKPOINT_DIR="jingheya/lotus-depth-g-v1-0"
+export CHECKPOINT_DIR="jingheya/lotus-depth-g-v2-0-disparity"
 export OUTPUT_DIR="output/Depth_G_Infer"
 export TASK_NAME="depth"
 
@@ -22,4 +22,5 @@ CUDA_VISIBLE_DEVICES=$CUDA python infer.py \
         --input_dir=$TEST_IMAGES \
         --task_name=$TASK_NAME \
         --mode=$MODE \
-        --output_dir=$OUTPUT_DIR
+        --output_dir=$OUTPUT_DIR \
+        --disparity

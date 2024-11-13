@@ -31,6 +31,8 @@
 We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
+- 2024-11-13: The demo now supports video depth estimation. 
+- 2024-11-13: The [Lotus-depth-disparity](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) series models are now available, which achieve better performance than previous true-depth version. 
 - 2024-10-06: The demos are now available ([Depth](https://huggingface.co/spaces/haodongli/Lotus_Depth) & [Normal](https://huggingface.co/spaces/haodongli/Lotus_Normal)). Please have a try! <br>
 - 2024-10-05: The inference code is now available! <br>
 - 2024-09-26: [Paper](https://arxiv.org/abs/2409.18124) released. Click [here](https://github.com/EnVision-Research/Lotus/issues/14#issuecomment-2409094495) if you are curious about the 3D point clouds of the teaser's depth maps! <br>
@@ -82,13 +84,15 @@ pip install -r requirements.txt
 2. Run the evaluation command: `bash eval.sh`
 
 ### Choose your model
-We offer four models in total, here are the corresponding configurations:
-|CHECKPOINT_DIR |TASK_NAME |MODE |
-|:--:|:--:|:--:|
-| [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`|
-| [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` |
-| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation`|
-| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` |
+Below are the released models and their corresponding configurations:
+|CHECKPOINT_DIR |TASK_NAME |MODE |  DEPTH TYPE |
+|:--:|:--:|:--:|:--:|
+| [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`| True Depth|
+| [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` | True Depth|
+| [`jingheya/lotus-depth-g-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) | `depth`| `generation`| Inverse Depth (Disparity)|
+| [`jingheya/lotus-depth-d-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity) | `depth`|`regression` | Inverse Depth (Disparity)|
+| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation` | - |
+| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` | - |
 
 ## 🎓 Citation
 If you find our work useful in your research, please consider citing our paper:

@@ -51,6 +51,10 @@ def parse_args():
         default="depth", # "normal"
     )
     parser.add_argument(
+        "--disparity",
+        action="store_true",
+    )
+    parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
 
@@ -174,7 +178,7 @@ def main():
                 save_file_name = os.path.basename(test_images[i])[:-4]
                 if args.task_name == 'depth':
                     output_npy = pred.mean(axis=-1)
-                    output_color = colorize_depth_map(output_npy)
+                    output_color = colorize_depth_map(output_npy, reverse_color=args.disparity)
                 else:
                     output_npy = pred
                     output_color = Image.fromarray((output_npy * 255).astype(np.uint8))

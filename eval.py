@@ -47,6 +47,10 @@ def parse_args():
         default="depth", # "normal"
     )
     parser.add_argument(
+        "--disparity",
+        action="store_true",
+    )
+    parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
 
@@ -178,9 +182,10 @@ def main():
             }
             for dataset_name, config_path in test_depth_dataset_configs.items():
                 eval_dir = os.path.join(args.output_dir, args.task_name, dataset_name)
-                test_dataset_config = os.path.join(test_data_dir, config_path)     
+                test_dataset_config = os.path.join(test_data_dir, config_path)
+                alignment_type = "least_square_disparity" if args.disparity else "least_square"
                 metric_tracker = evaluation_depth(eval_dir, test_dataset_config, test_data_dir, eval_mode="generate_prediction",
-                                                  gen_prediction=gen_depth, pipeline=pipeline)
+                                                  gen_prediction=gen_depth, pipeline=pipeline, alignment=alignment_type)
                 print(dataset_name,',', 'abs_relative_difference: ', metric_tracker.result()['abs_relative_difference'], 'delta1_acc: ', metric_tracker.result()['delta1_acc'])
         elif args.task_name == 'normal':
             test_data_dir = os.path.join(args.base_test_data_dir, args.task_name)
