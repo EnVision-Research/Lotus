@@ -262,9 +262,14 @@ def run_demo_server():
             <a title="Github" href="https://github.com/EnVision-Research/Lotus" target="_blank" rel="noopener noreferrer" style="display: inline-block;">
                 <img src="https://img.shields.io/github/stars/EnVision-Research/Lotus?label=GitHub%20%E2%98%85&logo=github&color=C8C" alt="badge-github-stars">
             </a>
+            <a title="Social" href="https://x.com/Jingheya/status/1839553365870784563" target="_blank" rel="noopener noreferrer" style="display: inline-block;">
+                <img src="https://www.obukhov.ai/img/badges/badge-social.svg" alt="social">
+            </a>
             <a title="Social" href="https://x.com/haodongli00/status/1839524569058582884" target="_blank" rel="noopener noreferrer" style="display: inline-block;">
                 <img src="https://www.obukhov.ai/img/badges/badge-social.svg" alt="social">
             </a>
+            <br>
+            <strong>Please consider starring <span style="color: orange">&#9733;</span> the <a href="https://github.com/EnVision-Research/Lotus" target="_blank" rel="noopener noreferrer">GitHub Repo</a> if you find this useful!</strong>
         """
         )
         with gr.Tabs(elem_classes=["tabs"]):
