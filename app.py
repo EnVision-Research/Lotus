@@ -318,51 +318,52 @@ def run_demo_server():
                     cache_examples=False,
                 )
 
-            with gr.Tab("VIDEO"):
-                with gr.Row():
-                    with gr.Column():
-                        input_video = gr.Video(
-                            label="Input Video",
-                            autoplay=True,
-                            loop=True,
-                        )
-                        seed = gr.Number(
-                            label="Seed (only for Generative mode)",
-                            minimum=0,
-                            maximum=999999999,
-                        )
-                        with gr.Row():
-                            video_submit_btn = gr.Button(
-                                value=f"Predict {TASK.capitalize()}!", variant="primary"
+            if TASK == 'depth':
+                with gr.Tab("VIDEO"):
+                    with gr.Row():
+                        with gr.Column():
+                            input_video = gr.Video(
+                                label="Input Video",
+                                autoplay=True,
+                                loop=True,
                             )
-                            video_reset_btn = gr.Button(value="Reset")
-                    with gr.Column():
-                        video_output_g = gr.Video(
-                            label="Output (Generative)",
-                            interactive=False,
-                            autoplay=True,
-                            loop=True,
-                            show_share_button=True,
-                        )
-                        with gr.Row():
-                            video_output_d = gr.Video(
-                                label="Output (Discriminative)",
+                            seed = gr.Number(
+                                label="Seed (only for Generative mode)",
+                                minimum=0,
+                                maximum=999999999,
+                            )
+                            with gr.Row():
+                                video_submit_btn = gr.Button(
+                                    value=f"Predict {TASK.capitalize()}!", variant="primary"
+                                )
+                                video_reset_btn = gr.Button(value="Reset")
+                        with gr.Column():
+                            video_output_g = gr.Video(
+                                label="Output (Generative)",
                                 interactive=False,
                                 autoplay=True,
                                 loop=True,
                                 show_share_button=True,
                             )
+                            with gr.Row():
+                                video_output_d = gr.Video(
+                                    label="Output (Discriminative)",
+                                    interactive=False,
+                                    autoplay=True,
+                                    loop=True,
+                                    show_share_button=True,
+                                )
 
-                gr.Examples(
-                    fn=infer_video_gpu,
-                    examples=sorted([
-                        [os.path.join(f"assets/app/{TASK}", "videos", name), 0]
-                        for name in os.listdir(os.path.join(f"assets/app/{TASK}", "videos"))
-                    ]),
-                    inputs=[input_video, seed],
-                    outputs=[video_output_g, video_output_d],
-                    cache_examples=False,
-                )
+                    gr.Examples(
+                        fn=infer_video_gpu,
+                        examples=sorted([
+                            [os.path.join(f"assets/app/{TASK}", "videos", name), 0]
+                            for name in os.listdir(os.path.join(f"assets/app/{TASK}", "videos"))
+                        ]),
+                        inputs=[input_video, seed],
+                        outputs=[video_output_g, video_output_d],
+                        cache_examples=False,
+                    )
 
         ### Image
         image_submit_btn.click(
@@ -383,17 +384,18 @@ def run_demo_server():
         )
 
         ### Video
-        video_submit_btn.click(
-            fn=infer_video_gpu,
-            inputs=[input_video, seed],
-            outputs=[video_output_g, video_output_d],
-            queue=True,
-        )
-        video_reset_btn.click(
-            fn=lambda: (None, None, None),
-            inputs=[],
-            outputs=[video_output_g, video_output_d],
-        )
+        if TASK == 'depth':
+            video_submit_btn.click(
+                fn=infer_video_gpu,
+                inputs=[input_video, seed],
+                outputs=[video_output_g, video_output_d],
+                queue=True,
+            )
+            video_reset_btn.click(
+                fn=lambda: (None, None, None),
+                inputs=[],
+                outputs=[video_output_g, video_output_d],
+            )
 
         ### Server launch
         demo.queue(
