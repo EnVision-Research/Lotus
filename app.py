@@ -60,17 +60,58 @@ def infer_pipe(pipe, test_image, task_name, seed, device):
         # Post-process the prediction
         if task_name == 'depth':
             output_npy = pred.mean(axis=-1)
-            output_color = colorize_depth_map(output_npy)
+            output_color = colorize_depth_map(output_npy, reverse_color=True)
         else:
             output_npy = pred
             output_color = Image.fromarray((output_npy * 255).astype(np.uint8))
 
     return output_color
 
+def infer_pipe_video(pipe, test_image, task_name, generator, device, latents=None):
+    if torch.backends.mps.is_available():
+        autocast_ctx = nullcontext()
+    else:
+        autocast_ctx = torch.autocast(pipe.device.type)
+    with autocast_ctx:
+        test_image = np.array(test_image).astype(np.float16)
+        test_image = torch.tensor(test_image).permute(2,0,1).unsqueeze(0)
+        test_image = test_image / 127.5 - 1.0 
+        test_image = test_image.to(device)
+
+        task_emb = torch.tensor([1, 0]).float().unsqueeze(0).repeat(1, 1).to(device)
+        task_emb = torch.cat([torch.sin(task_emb), torch.cos(task_emb)], dim=-1).repeat(1, 1)
+
+        # Run
+        output = pipe(
+            rgb_in=test_image, 
+            prompt='', 
+            num_inference_steps=1, 
+            generator=generator, 
+            latents=latents,
+            # guidance_scale=0,
+            output_type='np',
+            timesteps=[999],
+            task_emb=task_emb,
+            return_dict=False
+            )
+        pred = output[0][0]
+        last_frame_latent = output[2]
+
+        # Post-process the prediction
+        if task_name == 'depth':
+            output_npy = pred.mean(axis=-1)
+            output_color = colorize_depth_map(output_npy, reverse_color=True)
+        else:
+            output_npy = pred
+            output_color = Image.fromarray((output_npy * 255).astype(np.uint8))
+
+    return output_color, last_frame_latent
+
+
 def load_pipe(task_name):
     if task_name == 'depth':
-        model_g = 'jingheya/lotus-depth-g-v1-0'
-        model_d = 'jingheya/lotus-depth-d-v1-1'
+        model_g = 'jingheya/lotus-depth-g-v2-0-disparity'
+        model_d = 'jingheya/lotus-depth-d-v2-0-disparity'
     else:
         model_g = 'jingheya/lotus-normal-g-v1-0'
         model_d = 'jingheya/lotus-normal-d-v1-0'
@@ -96,6 +137,10 @@ def lotus_video(input_video, task_name, seed, device):
     
     # load the video and split it into frames
     cap = cv2.VideoCapture(input_video)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    
     frames = []
     while True:
         ret, frame = cap.read()
@@ -104,15 +149,28 @@ def lotus_video(input_video, task_name, seed, device):
         frames.append(frame)
     cap.release()
 
+    # generate latents_common for lotus-g
+    if seed is None:
+        generator = None
+    else:
+        generator = torch.Generator(device=device).manual_seed(seed)
+    last_frame_latent = None
+    latent_common = torch.randn(
+        (1, 4, height // pipe_g.vae_scale_factor, width // pipe_g.vae_scale_factor), generator=generator, dtype=pipe_g.dtype, device=device
+    )
+
     output_g = []
     output_d = []
     for frame in frames:
-        output_frame_g = infer_pipe(pipe_g, frame, task_name, seed, device)
+        latents = latent_common
+        if last_frame_latent is not None:
+            latents = 0.9 * latents + 0.1 * last_frame_latent
+        output_frame_g, last_frame_latent = infer_pipe_video(pipe_g, frame, task_name, seed, device, latents)
         output_frame_d = infer_pipe(pipe_d, frame, task_name, seed, device)
         output_g.append(output_frame_g)
         output_d.append(output_frame_d)
 
-    return output_g, output_d
+    return output_g, output_d, fps
 
 def lotus(image_input, task_name, seed, device):
     pipe_g, pipe_d = load_pipe(task_name)
@@ -132,14 +190,14 @@ def infer(path_input, seed):
     return [path_input, g_save_path], [path_input, d_save_path]
 
 def infer_video(path_input, seed):
-    frames_g, frames_d = lotus_video(path_input, TASK, seed, device)
+    frames_g, frames_d, fps = lotus_video(path_input, TASK, seed, device)
     if not os.path.exists(f"assets/app/{TASK}/output"):
         os.makedirs(f"assets/app/{TASK}/output")
     name_base, _ = os.path.splitext(os.path.basename(path_input))
     g_save_path = os.path.join(f"assets/app/{TASK}/output", f"{name_base}_g.mp4")
     d_save_path = os.path.join(f"assets/app/{TASK}/output", f"{name_base}_d.mp4")
-    imageio.mimsave(g_save_path, frames_g)
-    imageio.mimsave(d_save_path, frames_d)
+    imageio.mimsave(g_save_path, frames_g, fps=fps)
+    imageio.mimsave(d_save_path, frames_d, fps=fps)
     return [g_save_path, d_save_path]
 
 def run_demo_server():
