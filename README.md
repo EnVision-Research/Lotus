@@ -85,14 +85,14 @@ pip install -r requirements.txt
 
 ### Choose your model
 Below are the released models and their corresponding configurations:
-|CHECKPOINT_DIR |TASK_NAME |MODE |  DEPTH TYPE |
-|:--:|:--:|:--:|:--:|
-| [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`| True Depth|
-| [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` | True Depth|
-| [`jingheya/lotus-depth-g-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) | `depth`| `generation`| Inverse Depth (Disparity)|
-| [`jingheya/lotus-depth-d-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity) | `depth`|`regression` | Inverse Depth (Disparity)|
-| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation` | - |
-| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` | - |
+|CHECKPOINT_DIR |TASK_NAME |MODE |
+|:--:|:--:|:--:|
+| [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | `depth`| `generation`|
+| [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | `depth`|`regression` |
+| [`jingheya/lotus-depth-g-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) | `depth`| `generation`|
+| [`jingheya/lotus-depth-d-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity) | `depth`|`regression` |
+| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |`normal` | `generation` |
+| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |`normal` |`regression` |
 
 ## 🎓 Citation
 If you find our work useful in your research, please consider citing our paper:
