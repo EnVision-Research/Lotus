@@ -12,7 +12,7 @@
 [Yixun Liang](https://yixunliang.github.io/)<sup>1</sup>,
 [Kaiqiang Zhou]()<sup>3</sup>,
 [Hongbo Zhang]()<sup>3</sup>,
-[Bingbing Liu](https://scholar.google.com/citations?user=-rCulKwAAAAJ&hl=en)<sup>3</sup>,
+[Bingbing Liu](https://scholar.google.com/citations?user=-rCulKwAAAAJ&hl=en)<sup>3</sup>,<br>
 [Ying-Cong Chen](https://www.yingcong.me/)<sup>1,4&#9993;</sup>
 
 <span class="author-block"><sup>1</sup>HKUST(GZ)</span>
