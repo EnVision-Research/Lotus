@@ -10,7 +10,6 @@
 [Haodong Li](https://haodong-li.com/)<sup>1<span style="color:red;">&#10033;</span></sup>,
 [Wei Yin](https://yvanyin.net/)<sup>2</sup>,
 [Yixun Liang](https://yixunliang.github.io/)<sup>1</sup>,
-[Leheng Li](https://len-li.github.io/)<sup>1</sup>,
 [Kaiqiang Zhou]()<sup>3</sup>,
 [Hongbo Zhang]()<sup>3</sup>,
 [Bingbing Liu](https://scholar.google.com/citations?user=-rCulKwAAAAJ&hl=en)<sup>3</sup>,
