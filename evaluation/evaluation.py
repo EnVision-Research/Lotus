@@ -93,7 +93,11 @@ def parser_agrs():
     return args
 
 # Referred to Marigold
-def evaluation_depth(output_dir, dataset_config, base_data_dir, eval_mode, pred_suffix="", alignment="least_square", alignment_max_res=None, prediction_dir=None, gen_prediction=None, pipeline=None, save_pred=False, save_pred_vis=False):
+def evaluation_depth(output_dir, dataset_config, base_data_dir, eval_mode, pred_suffix="", 
+                     alignment="least_square", alignment_max_res=None, prediction_dir=None, 
+                     gen_prediction=None, pipeline=None, save_pred=False, save_pred_vis=False,
+                     processing_res=None,
+                     ):
     '''
     if eval_mode == "load_prediction": assert prediction_dir is not None
     elif eval_mode == "generate_prediction": assert gen_prediction is not None and pipeline is not None
@@ -107,14 +111,17 @@ def evaluation_depth(output_dir, dataset_config, base_data_dir, eval_mode, pred_
 
     # -------------------- Data --------------------
     cfg_data = OmegaConf.load(dataset_config)
-    processing_res = cfg_data.get('processing_res',None)
+
+    processing_res = processing_res or cfg_data.get('processing_res',None)
+    logger.info(f"processing_res: {processing_res}")
+
     alignment_max_res = cfg_data.get('alignment_max_res', None)
 
     dataset: BaseDepthDataset = get_dataset(
         cfg_data, base_data_dir=base_data_dir, mode=DatasetMode.EVAL
     )
 
-    dataloader = DataLoader(dataset, batch_size=1, num_workers=0)
+    dataloader = DataLoader(dataset, batch_size=1, num_workers=8, pin_memory=True)
 
     # -------------------- Eval metrics --------------------
     metric_funcs = [getattr(metric, _met) for _met in eval_metrics]
@@ -295,7 +302,8 @@ def evaluation_depth(output_dir, dataset_config, base_data_dir, eval_mode, pred_
     return metric_tracker
 
 # Referred to DSINE
-def evaluation_normal(eval_dir, base_data_dir, dataset_split_path, eval_mode="generate_prediction", gen_prediction=None, pipeline=None, prediction_dir=None, 
+def evaluation_normal(eval_dir, base_data_dir, dataset_split_path, eval_mode="generate_prediction", 
+                      gen_prediction=None, pipeline=None, prediction_dir=None, processing_res=None,
     eval_datasets=[('nyuv2', 'test'), ('scannet', 'test'), ('ibims', 'ibims'), ('sintel', 'sintel')],
     save_pred_vis=False
     ):
@@ -304,6 +312,7 @@ def evaluation_normal(eval_dir, base_data_dir, dataset_split_path, eval_mode="ge
     elif eval_mode == "generate_prediction": assert gen_prediction is not None and pipeline is not None
     '''
     os.makedirs(eval_dir, exist_ok=True)
+    logging.info(f"processing_res: {processing_res}")
 
     device = torch.device('cuda')
     metric_results = {}
@@ -345,7 +354,18 @@ def evaluation_normal(eval_dir, base_data_dir, dataset_split_path, eval_mode="ge
                 norm_out = torch.tensor(norm_out).permute(2,0,1).unsqueeze(0).to(device) # torch.tensor([1, 3, h, w])
 
             elif eval_mode == "generate_prediction":
+                # resize to processing_res
+                if processing_res is not None:
+                    input_size = img.shape
+                    img =  resize_max_res(
+                    img, max_edge_resolution=processing_res,
+                    # resample_method=resample_method,
+                    )
                 norm_out = gen_prediction(img, pipeline) # [1, 3, h, w]
+                
+                # resize to original res
+                if processing_res is not None:
+                    norm_out = resize(norm_out, input_size[-2:], antialias=True, )
 
             # crop the padded part
             norm_out = norm_out[:, :, lrtb[2]:lrtb[2]+orig_H, lrtb[0]:lrtb[0]+orig_W]

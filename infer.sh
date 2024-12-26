@@ -23,4 +23,5 @@ CUDA_VISIBLE_DEVICES=$CUDA python infer.py \
         --task_name=$TASK_NAME \
         --mode=$MODE \
         --output_dir=$OUTPUT_DIR \
-        --disparity
+        --disparity 
+        # --processing_res=0 # Defualt: 768. To obtain more fine-grained results, you can set `--processing_res=0` (original resolution) or a higher resolution. 

@@ -71,6 +71,23 @@ def parse_args():
         action="store_true",
         help="Run with half-precision (16-bit float), might lead to suboptimal result.",
     )
+    parser.add_argument(
+        "--processing_res",
+        type=int,
+        default=None,
+        help="Maximum resolution of processing. 0 for using input image resolution. Default: 768.",
+    )
+    parser.add_argument(
+        "--output_processing_res",
+        action="store_true",
+        help="When input is resized, out put depth at resized operating resolution. Default: False.",
+    )
+    parser.add_argument(
+        "--resample_method",
+        choices=["bilinear", "bicubic", "nearest"],
+        default="bilinear",
+        help="Resampling method used to resize images and depth predictions. This can be one of `bilinear`, `bicubic` or `nearest`. Default: `bilinear`",
+    )
 
     args = parser.parse_args()
 
@@ -103,6 +120,15 @@ def main():
         logging.info(f"Running with half precision ({dtype}).")
     else:
         dtype = torch.float32
+    
+    # processing_res
+    processing_res = args.processing_res
+    match_input_res = not args.output_processing_res
+    if 0 == processing_res and match_input_res is False:
+        logging.warning(
+            "Processing at native resolution without resizing output might NOT lead to exactly the same resolution, due to the padding and pooling properties of conv layers."
+        )
+    resample_method = args.resample_method
 
     # -------------------- Device --------------------
     if torch.cuda.is_available():
@@ -132,6 +158,7 @@ def main():
     else:
         raise ValueError(f'Invalid mode: {args.mode}')
     logging.info(f"Successfully loading pipeline from {args.pretrained_model_name_or_path}.")
+    logging.info(f"processing_res = {processing_res or pipeline.default_processing_resolution}")
 
     pipeline = pipeline.to(device)
     pipeline.set_progress_bar_config(disable=True)
@@ -172,6 +199,9 @@ def main():
                     output_type='np',
                     timesteps=[args.timestep],
                     task_emb=task_emb,
+                    processing_res=processing_res,
+                    match_input_res=match_input_res,
+                    resample_method=resample_method,
                     ).images[0]
 
                 # Post-process the prediction

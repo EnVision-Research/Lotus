@@ -7,6 +7,9 @@ import torch.nn.functional as F
 from packaging import version
 from transformers import CLIPImageProcessor, CLIPTextModel, CLIPTokenizer, CLIPVisionModelWithProjection
 import tensorboard
+from utils.image_utils import resize_max_res, get_tv_resample_method, resize_back, get_pil_resample_method
+from torchvision.transforms.functional import resize
+from torchvision.transforms import InterpolationMode
 
 from diffusers.configuration_utils import FrozenDict
 from diffusers.image_processor import PipelineImageInput, VaeImageProcessor
@@ -1011,6 +1014,7 @@ class DirectDiffusionPipeline(
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
 
 class LotusDPipeline(DirectDiffusionPipeline):
+    default_processing_resolution = 768
     @torch.no_grad()
     def __call__(
         self,
@@ -1023,6 +1027,9 @@ class LotusDPipeline(DirectDiffusionPipeline):
         output_type: Optional[str] = "pil",
         return_dict: bool = True,
         cross_attention_kwargs: Optional[Dict[str, Any]] = None,
+        processing_res: Optional[int] = None,
+        match_input_res: bool = True,
+        resample_method: str = "bilinear",
         **kwargs,
     ):
         r"""
@@ -1053,6 +1060,15 @@ class LotusDPipeline(DirectDiffusionPipeline):
             cross_attention_kwargs (`dict`, *optional*):
                 A kwargs dictionary that if specified is passed along to the [`AttentionProcessor`] as defined in
                 [`self.processor`](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/attention_processor.py).
+            processing_res (`int`, *optional*, defaults to `None`):
+                Effective processing resolution. When set to `0`, processes at the original image resolution. This
+                produces crisper predictions, but may also lead to the overall loss of global context. The default
+                value `None` resolves to the optimal value from the model config.
+            match_input_res (`bool`, *optional*, defaults to `True`):
+                Resize depth prediction to match input resolution.
+                Only valid if `processing_res` > 0.
+            resample_method: (`str`, *optional*, defaults to `bilinear`):
+                Resampling method used to resize images and depth predictions. This can be one of `bilinear`, `bicubic` or `nearest`, defaults to: `bilinear`.
         Examples:
 
         Returns:
@@ -1067,6 +1083,25 @@ class LotusDPipeline(DirectDiffusionPipeline):
        
         # 1. Define call parameters
         self._cross_attention_kwargs = cross_attention_kwargs
+
+        if processing_res is None:
+            processing_res = self.default_processing_resolution
+
+        assert processing_res >= 0
+
+        # 0. Image processing
+        input_size = rgb_in.shape
+        assert (
+            4 == rgb_in.dim() and 3 == input_size[-3]
+        ), f"Wrong input shape {input_size}, expected [1, rgb, H, W]"
+        # Resize image
+        resample_method: InterpolationMode = get_tv_resample_method(resample_method)
+        if processing_res > 0:
+            rgb_in = resize_max_res(
+                rgb_in,
+                max_edge_resolution=processing_res,
+                resample_method=resample_method,
+            )
 
         device = self._execution_device
 
@@ -1118,12 +1153,18 @@ class LotusDPipeline(DirectDiffusionPipeline):
         # Offload all models
         self.maybe_free_model_hooks()
 
+        # 8. Resize "image" back to original resolution
+        if match_input_res:
+            resample_method = get_pil_resample_method("nearest") if output_type == "pil" else get_tv_resample_method("nearest")
+            image = resize_back(image, input_size[-2:], resample_method)
+
         if not return_dict:
             return (image, has_nsfw_concept)
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
 
 class LotusGPipeline(DirectDiffusionPipeline):
+    default_processing_resolution = 768
     @torch.no_grad()
     def __call__(
         self,
@@ -1139,6 +1180,9 @@ class LotusGPipeline(DirectDiffusionPipeline):
         output_type: Optional[str] = "pil",
         return_dict: bool = True,
         cross_attention_kwargs: Optional[Dict[str, Any]] = None,
+        processing_res: Optional[int] = None,
+        match_input_res: bool = True,
+        resample_method: str = "bilinear",
         **kwargs,
     ):
         r"""
@@ -1179,6 +1223,15 @@ class LotusGPipeline(DirectDiffusionPipeline):
             cross_attention_kwargs (`dict`, *optional*):
                 A kwargs dictionary that if specified is passed along to the [`AttentionProcessor`] as defined in
                 [`self.processor`](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/attention_processor.py).
+            processing_res (`int`, *optional*, defaults to `None`):
+                Effective processing resolution. When set to `0`, processes at the original image resolution. This
+                produces crisper predictions, but may also lead to the overall loss of global context. The default
+                value `None` resolves to the optimal value from the model config.
+            match_input_res (`bool`, *optional*, defaults to `True`):
+                Resize depth prediction to match input resolution.
+                Only valid if `processing_res` > 0.
+            resample_method: (`str`, *optional*, defaults to `bilinear`):
+                Resampling method used to resize images and depth predictions. This can be one of `bilinear`, `bicubic` or `nearest`, defaults to: `bilinear`.
         Examples:
 
         Returns:
@@ -1190,6 +1243,24 @@ class LotusGPipeline(DirectDiffusionPipeline):
         """
 
         self._cross_attention_kwargs = cross_attention_kwargs
+        if processing_res is None:
+            processing_res = self.default_processing_resolution
+
+        assert processing_res >= 0
+
+        # 0. Image processing
+        input_size = rgb_in.shape
+        assert (
+            4 == rgb_in.dim() and 3 == input_size[-3]
+        ), f"Wrong input shape {input_size}, expected [1, rgb, H, W]"
+        # Resize image
+        resample_method: InterpolationMode = get_tv_resample_method(resample_method)
+        if processing_res > 0:
+            rgb_in = resize_max_res(
+                rgb_in,
+                max_edge_resolution=processing_res,
+                resample_method=resample_method,
+            )
 
         # 1. Default height and width to unet
         height, width = rgb_in.shape[2:] 
@@ -1277,6 +1348,11 @@ class LotusGPipeline(DirectDiffusionPipeline):
 
         # Offload all models
         self.maybe_free_model_hooks()
+
+        # 8. Resize "image" back to original resolution
+        if match_input_res:
+            resample_method = get_pil_resample_method("nearest") if output_type == "pil" else get_tv_resample_method("nearest")
+            image = resize_back(image, input_size[-2:], resample_method)
 
         if not return_dict:
             return (image, has_nsfw_concept, latents)

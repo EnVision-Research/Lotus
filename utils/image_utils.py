@@ -2,7 +2,8 @@ from PIL import Image
 import matplotlib
 import numpy as np
 
-from PIL import Image
+from typing import Union
+import PIL.Image
 
 import torch
 from torchvision.transforms import InterpolationMode
@@ -96,6 +97,49 @@ def resize_max_res(
     resized_img = resize(img, (new_height, new_width), resample_method, antialias=True)
     return resized_img
 
+def resize_back(
+        img: Union[torch.Tensor, np.ndarray, PIL.Image.Image],
+        target_size: Union[int, tuple[int, int]],
+        resample_method: Union[InterpolationMode, int] = InterpolationMode.BILINEAR,
+) -> Union[torch.Tensor, np.ndarray, PIL.Image.Image]:
+    """
+    Resize image to target size.
+
+    Args:
+        img (`Union[torch.Tensor, np.ndarray, PIL.Image.Image]`):
+            Image to be resized. 
+        target_size (`Union[int, tuple[int, int]]`):
+            Target size of the resized image.
+        resample_method (`Union[InterpolationMode, int]`):
+            Resampling method used to resize images. 
+
+    Returns:
+        `Union[torch.Tensor, np.ndarray, PIL.Image.Image]`: Resized image.
+    """
+    if isinstance(img, torch.Tensor): # [B, C, H, W]
+        resized_img = resize(img, target_size, resample_method, antialias=True)
+    if isinstance(img, np.ndarray): # [B, H, W, C]
+        # Conver to Torch.Tensor
+        img = torch.tensor(img).permute(0, 3, 1, 2)
+        resized_img = resize(img, target_size, resample_method, antialias=True)
+        # Convert back to np.ndarray
+        resized_img = resized_img.permute(0, 2, 3, 1).numpy()
+    elif isinstance(img, PIL.Image.Image):
+        target_size = (target_size[1], target_size[0])  # PIL uses (width, height)
+        resized_img = img.resize(target_size, resample_method)
+    return resized_img
+
+def get_pil_resample_method(method_str: str) -> int:
+    resample_method_dict = {
+        "bilinear": Image.BILINEAR,
+        "bicubic": Image.BICUBIC,
+        "nearest": Image.NEAREST,
+    }
+    resample_method = resample_method_dict.get(method_str, None)
+    if resample_method is None:
+        raise ValueError(f"Unknown resampling method: {resample_method}")
+    else:
+        return resample_method
 
 def get_tv_resample_method(method_str: str) -> InterpolationMode:
     resample_method_dict = {

@@ -69,6 +69,23 @@ def parse_args():
         action="store_true",
         help="Run with half-precision (16-bit float), might lead to suboptimal result.",
     )
+    parser.add_argument(
+        "--processing_res",
+        type=int,
+        default=None,
+        help="Maximum resolution of processing. 0 for using input image resolution. Default: 768.",
+    )
+    parser.add_argument(
+        "--output_processing_res",
+        action="store_true",
+        help="When input is resized, out put depth at resized operating resolution. Default: False.",
+    )
+    parser.add_argument(
+        "--resample_method",
+        choices=["bilinear", "bicubic", "nearest"],
+        default="bilinear",
+        help="Resampling method used to resize images and depth predictions. This can be one of `bilinear`, `bicubic` or `nearest`. Default: `bilinear`",
+    )
     
     args = parser.parse_args()
 
@@ -96,6 +113,15 @@ def main():
         logging.info(f"Running with half precision ({dtype}).")
     else:
         dtype = torch.float32
+
+    # processing_res
+    processing_res = args.processing_res
+    match_input_res = not args.output_processing_res
+    if 0 == processing_res and match_input_res is False:
+        logging.warning(
+            "Processing at native resolution without resizing output might NOT lead to exactly the same resolution, due to the padding and pooling properties of conv layers."
+        )
+    # resample_method = args.resample_method
 
     # -------------------- Device --------------------
     if torch.cuda.is_available():
@@ -126,7 +152,7 @@ def main():
     if args.enable_xformers_memory_efficient_attention:
         pipeline.enable_xformers_memory_efficient_attention()
 
-    def gen_depth(rgb_in, pipe, prompt="", num_inference_steps=50):
+    def gen_depth(rgb_in, pipe, prompt="", num_inference_steps=1):
         if torch.backends.mps.is_available():
                 autocast_ctx = nullcontext()
         else:
@@ -144,12 +170,13 @@ def main():
                             num_inference_steps=num_inference_steps,
                             output_type='np',
                             timesteps=[args.timestep],
-                            task_emb=task_emb, 
+                            task_emb=task_emb,
+                            processing_res=0, # processing resolution before the pipeline
                             ).images[0]
             pred_depth = pred_depth.mean(axis=-1) # [0,1]
         return pred_depth
 
-    def gen_normal(img, pipe, prompt="", num_inference_steps=50):
+    def gen_normal(img, pipe, prompt="", num_inference_steps=1):
         if torch.backends.mps.is_available():
                 autocast_ctx = nullcontext()
         else:
@@ -166,6 +193,7 @@ def main():
                             output_type='pt',
                             timesteps=[args.timestep],
                             task_emb=task_emb,
+                            processing_res=0, # processing resolution before the pipeline
                             ).images[0] # [0,1], (3,h,w)
             pred_normal = (pred_normal*2-1.0).unsqueeze(0) # [-1,1], (1,3,h,w)
         return pred_normal
@@ -185,7 +213,7 @@ def main():
                 test_dataset_config = os.path.join(test_data_dir, config_path)
                 alignment_type = "least_square_disparity" if args.disparity else "least_square"
                 metric_tracker = evaluation_depth(eval_dir, test_dataset_config, test_data_dir, eval_mode="generate_prediction",
-                                                  gen_prediction=gen_depth, pipeline=pipeline, alignment=alignment_type)
+                                                  gen_prediction=gen_depth, pipeline=pipeline, alignment=alignment_type, processing_res=None)
                 print(dataset_name,',', 'abs_relative_difference: ', metric_tracker.result()['abs_relative_difference'], 'delta1_acc: ', metric_tracker.result()['delta1_acc'])
         elif args.task_name == 'normal':
             test_data_dir = os.path.join(args.base_test_data_dir, args.task_name)
@@ -193,7 +221,8 @@ def main():
             eval_datasets = [('nyuv2', 'test'), ('scannet', 'test'), ('ibims', 'ibims'), ('sintel', 'sintel')]
             eval_dir = os.path.join(args.output_dir, args.task_name)
             evaluation_normal(eval_dir, test_data_dir, dataset_split_path, eval_mode="generate_prediction", 
-                              gen_prediction=gen_normal, pipeline=pipeline, eval_datasets=eval_datasets)
+                              gen_prediction=gen_normal, pipeline=pipeline, eval_datasets=eval_datasets,
+                              processing_res=processing_res)
         else:
             raise ValueError(f"Not support predicting {args.task_name} yet. ")
         
