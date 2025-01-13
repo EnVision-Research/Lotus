@@ -81,7 +81,7 @@ pip install -r requirements.txt
     ```
 - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
-2. Run the evaluation command: `bash eval.sh`
+2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (depth or normal) and `[mode]` refers to the mode name (d or g). 
 
 ### Choose your model
 Below are the released models and their corresponding configurations:
