@@ -3,7 +3,7 @@ export CUDA=0
 
 export BASE_TEST_DATA_DIR="datasets/eval/"
 
-export CHECKPOINT_DIR="jingheya/lotus-normal-d-v1-0"
+export CHECKPOINT_DIR="jingheya/lotus-normal-d-v1-1"
 export OUTPUT_DIR="output/Normal_D_Eval"
 export TASK_NAME="normal"
 

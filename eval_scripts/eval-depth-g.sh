@@ -3,7 +3,7 @@ export CUDA=0
 
 export BASE_TEST_DATA_DIR="datasets/eval/"
 
-export CHECKPOINT_DIR="jingheya/lotus-depth-g-v2-0-disparity"
+export CHECKPOINT_DIR="jingheya/lotus-depth-g-v2-1-disparity"
 export OUTPUT_DIR="output/Depth_G_Eval"
 export TASK_NAME="depth"
 
