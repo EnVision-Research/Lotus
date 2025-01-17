@@ -32,6 +32,7 @@
 We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
+- 2025-01-17: Please check out our latest models ([lotus-normal-g-v1-1](https://huggingface.co/jingheya/lotus-normal-g-v1-1), [lotus-normal-d-v1-1](https://huggingface.co/jingheya/lotus-normal-d-v1-1)), which were trained with aligned surface normals, for improved performance.  
 - 2024-11-13: The demo now supports video depth estimation!
 - 2024-11-13: The Lotus disparity models ([Generative](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) & [Discriminative](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity)) are now available, which achieve better performance!
 - 2024-10-06: The demos are now available ([Depth](https://huggingface.co/spaces/haodongli/Lotus_Depth) & [Normal](https://huggingface.co/spaces/haodongli/Lotus_Normal)). Please have a try! <br>
@@ -82,7 +83,8 @@ pip install -r requirements.txt
     ```
 - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
-2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (depth or normal) and `[mode]` refers to the mode name (d or g). 
+2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (depth or normal) and `[mode]` refers to the mode name (d or g). </br>
+(Optional) To reproduce the results presented in our paper, you can set the `--rng_state_path` option in the evaluation command. The RNG state files are available at `./rng_states/`.
 
 ### Choose your model
 Below are the released models and their corresponding configurations:
@@ -90,10 +92,10 @@ Below are the released models and their corresponding configurations:
 |:--:|:--:|:--:|
 | [`jingheya/lotus-depth-g-v1-0`](https://huggingface.co/jingheya/lotus-depth-g-v1-0) | depth| `generation`|
 | [`jingheya/lotus-depth-d-v1-0`](https://huggingface.co/jingheya/lotus-depth-d-v1-0) | depth|`regression` |
-| [`jingheya/lotus-depth-g-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) | depth (disparity)| `generation`|
+| [`jingheya/lotus-depth-g-v2-1-disparity`](https://huggingface.co/jingheya/lotus-depth-g-v2-1-disparity) | depth (disparity)| `generation`|
 | [`jingheya/lotus-depth-d-v2-0-disparity`](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity) | depth (disparity)|`regression` |
-| [`jingheya/lotus-normal-g-v1-0`](https://huggingface.co/jingheya/lotus-normal-g-v1-0) |normal | `generation` |
-| [`jingheya/lotus-normal-d-v1-0`](https://huggingface.co/jingheya/lotus-normal-d-v1-0) |normal |`regression` |
+| [`jingheya/lotus-normal-g-v1-1`](https://huggingface.co/jingheya/lotus-normal-g-v1-1) |normal | `generation` |
+| [`jingheya/lotus-normal-d-v1-1`](https://huggingface.co/jingheya/lotus-normal-d-v1-1) |normal |`regression` |
 
 ## 🎓 Citation
 If you find our work useful in your research, please consider citing our paper:
