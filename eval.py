@@ -5,6 +5,8 @@ import os
 from contextlib import nullcontext
 import torch
 from diffusers.utils import check_min_version
+import random
+import numpy as np
 
 from pipeline import LotusGPipeline, LotusDPipeline
 from utils.seed_all import seed_all
@@ -86,6 +88,11 @@ def parse_args():
         default="bilinear",
         help="Resampling method used to resize images and depth predictions. This can be one of `bilinear`, `bicubic` or `nearest`. Default: `bilinear`",
     )
+    parser.add_argument(
+        "--rng_state_path",
+        default=None,
+        help="Load the random number generator states from the given path to ensure reproducibility of the results. "
+    )
     
     args = parser.parse_args()
 
@@ -130,6 +137,15 @@ def main():
         device = torch.device("cpu")
         logging.warning("CUDA is not available. Running on CPU will be slow.")
     logging.info(f"Device = {device}")
+
+    if args.rng_state_path:
+        torch.cuda.synchronize()
+        states = torch.load(args.rng_state_path)
+        random.setstate(states["random_state"])
+        np.random.set_state(states["numpy_random_seed"])
+        torch.set_rng_state(states["torch_manual_seed"])
+        torch.cuda.set_rng_state_all(states["torch_cuda_manual_seed"][:1])
+        logging.info(f"Loading the RNG states from: {args.rng_state_path}")
 
     # -------------------- Model --------------------
     if args.mode == 'generation':
