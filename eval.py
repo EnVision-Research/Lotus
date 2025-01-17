@@ -207,6 +207,7 @@ def main():
                 "kitti": "configs/data_kitti_eigen_test.yaml",
                 "scannet": "configs/data_scannet_val.yaml",
                 "eth3d": "configs/data_eth3d.yaml",
+                "diode": "configs/data_diode_all.yaml",
             }
             for dataset_name, config_path in test_depth_dataset_configs.items():
                 eval_dir = os.path.join(args.output_dir, args.task_name, dataset_name)
@@ -218,7 +219,7 @@ def main():
         elif args.task_name == 'normal':
             test_data_dir = os.path.join(args.base_test_data_dir, args.task_name)
             dataset_split_path = "evaluation/dataset_normal"
-            eval_datasets = [('nyuv2', 'test'), ('scannet', 'test'), ('ibims', 'ibims'), ('sintel', 'sintel')]
+            eval_datasets = [ ('nyuv2', 'test'), ('scannet', 'test'), ('ibims', 'ibims'), ('sintel', 'sintel'),  ('oasis', 'val')]
             eval_dir = os.path.join(args.output_dir, args.task_name)
             evaluation_normal(eval_dir, test_data_dir, dataset_split_path, eval_mode="generate_prediction", 
                               gen_prediction=gen_normal, pipeline=pipeline, eval_datasets=eval_datasets,

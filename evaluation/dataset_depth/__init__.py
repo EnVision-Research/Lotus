@@ -8,13 +8,14 @@ from .eth3d_dataset import ETH3DDataset
 from .kitti_dataset import KITTIDataset
 from .nyu_dataset import NYUDataset
 from .scannet_dataset import ScanNetDataset
-
+from .diode_dataset import DIODEDataset
 
 dataset_name_class_dict = {
     "nyu_v2": NYUDataset,
     "kitti": KITTIDataset,
     "eth3d": ETH3DDataset,
     "scannet": ScanNetDataset,
+    "diode": DIODEDataset,
 }
 
 
