@@ -32,7 +32,7 @@
 We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
-- 2025-01-17: Please check out our latest models ([lotus-normal-g-v1-1](https://huggingface.co/jingheya/lotus-normal-g-v1-1), [lotus-normal-d-v1-1](https://huggingface.co/jingheya/lotus-normal-d-v1-1)), which were trained with aligned surface normals, for improved performance.  
+- 2025-01-17: Please check out our latest models ([lotus-normal-g-v1-1](https://huggingface.co/jingheya/lotus-normal-g-v1-1), [lotus-normal-d-v1-1](https://huggingface.co/jingheya/lotus-normal-d-v1-1)), which were trained with aligned surface normals, leading to improved performance!  
 - 2024-11-13: The demo now supports video depth estimation!
 - 2024-11-13: The Lotus disparity models ([Generative](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) & [Discriminative](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity)) are now available, which achieve better performance!
 - 2024-10-06: The demos are now available ([Depth](https://huggingface.co/spaces/haodongli/Lotus_Depth) & [Normal](https://huggingface.co/spaces/haodongli/Lotus_Normal)). Please have a try! <br>
