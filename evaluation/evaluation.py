@@ -46,52 +46,6 @@ eval_metrics = [
     # "pixel_var"
 ]
 
-def parser_agrs():
-    parser = argparse.ArgumentParser()
-    # input
-    parser.add_argument(
-        "--prediction_dir",
-        type=str,
-        required=True,
-        help="Directory of depth predictions",
-    )
-    parser.add_argument(
-        "--output_dir", type=str, required=True, help="Output directory."
-    )
-
-    # dataset setting
-    parser.add_argument(
-        "--dataset_config",
-        type=str,
-        required=True,
-        help="Path to config file of evaluation dataset.",
-    )
-    parser.add_argument(
-        "--base_data_dir",
-        type=str,
-        required=True,
-        help="Path to base data directory.",
-    )
-
-    # LS depth alignment
-    parser.add_argument(
-        "--alignment",
-        choices=[None, "least_square", "least_square_disparity"],
-        default=None,
-        help="Method to estimate scale and shift between predictions and ground truth.",
-    )
-    parser.add_argument(
-        "--alignment_max_res",
-        type=int,
-        default=None,
-        help="Max operating resolution used for LS alignment",
-    )
-
-    parser.add_argument("--no_cuda", action="store_true", help="Run without cuda")
-
-    args = parser.parse_args()
-    return args
-
 # Referred to Marigold
 def evaluation_depth(output_dir, dataset_config, base_data_dir, eval_mode, pred_suffix="", 
                      alignment="least_square", alignment_max_res=None, prediction_dir=None, 
