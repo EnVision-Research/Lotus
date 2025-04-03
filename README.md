@@ -107,9 +107,9 @@ pip install -r requirements.txt
         SceneX/Y/bbox.txt
         SceneX/Y/pose.txt
         ```
-        where $X \in \{01, 02, 06, 18, 20\}$ and represent one of 5 different locations.
-        $Y \in \{\texttt{15-deg-left}, \texttt{15-deg-right}, \texttt{30-deg-left}, \texttt{30-deg-right}, \texttt{clone}, \texttt{fog}, \texttt{morning}, \texttt{overcast}, \texttt{rain}, \texttt{sunset}\}$ and represent the different variations.
-        $Z \in [0, 1]$ and represent the left or right camera. 
+        where $`X \in \{01, 02, 06, 18, 20\}`$ and represent one of 5 different locations.
+        $`Y \in \{\texttt{15-deg-left}, \texttt{15-deg-right}, \texttt{30-deg-left}, \texttt{30-deg-right}, \texttt{clone}, \texttt{fog}, \texttt{morning}, \texttt{overcast}, \texttt{rain}, \texttt{sunset}\}`$ and represent the different variations.
+        $`Z \in [0, 1]`$ and represent the left or right camera. 
         Note that the indexes always start from 0.
     - Generate the normal maps with the command: `bash utils/depth2normal.sh`.
 3. Run the training command! 🚀
@@ -132,7 +132,8 @@ pip install -r requirements.txt
 - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
 2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (**depth** or **normal**) and `[mode]` refers to the mode name (**g** or **d**). </br>
-(Optional) To reproduce the results presented in our paper, you can set the `--rng_state_path` option in the evaluation command. The RNG state files are available at `./rng_states/`.
+
+3. (Optional) To reproduce the results presented in our paper, you can set the `--rng_state_path` option in the evaluation command. The RNG state files are available at `./rng_states/`.
 
 ### Choose your model
 Below are the released models and their corresponding configurations:
