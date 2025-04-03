@@ -14,7 +14,7 @@
 [Leheng Li](https://len-li.github.io/)<sup>1</sup>,
 [Kaiqiang Zhou]()<sup>3</sup>,
 [Hongbo Zhang]()<sup>3</sup>,
-[Bingbing Liu](https://scholar.google.com/citations?user=-rCulKwAAAAJ&hl=en)<sup>3</sup>,<br>
+[Bingbing Liu]()<sup>3</sup>,<br>
 [Ying-Cong Chen](https://www.yingcong.me/)<sup>1,4&#9993;</sup>
 
 <span class="author-block"><sup>1</sup>HKUST(GZ)</span>
@@ -32,6 +32,7 @@
 We present **Lotus**, a diffusion-based visual foundation model for dense geometry prediction. With minimal training data, Lotus achieves SoTA performance in two key geometry perception tasks, i.e., zero-shot depth and normal estimation. "Avg. Rank" indicates the average ranking across all metrics, where lower values are better. Bar length represents the amount of training data used.
 
 ## 📢 News
+- 2025-04-03: The training code of Lotus (Generative & Discriminative) is now available!
 - 2025-01-17: Please check out our latest models ([lotus-normal-g-v1-1](https://huggingface.co/jingheya/lotus-normal-g-v1-1), [lotus-normal-d-v1-1](https://huggingface.co/jingheya/lotus-normal-d-v1-1)), which were trained with aligned surface normals, leading to improved performance!  
 - 2024-11-13: The demo now supports video depth estimation!
 - 2024-11-13: The Lotus disparity models ([Generative](https://huggingface.co/jingheya/lotus-depth-g-v2-0-disparity) & [Discriminative](https://huggingface.co/jingheya/lotus-depth-d-v2-0-disparity)) are now available, which achieve better performance!
@@ -68,7 +69,54 @@ pip install -r requirements.txt
     python app.py normal
     ```
 
-## 🕹️ Usage
+## 🔥 Training
+1. Initialize your Accelerate environment with:
+    ```
+    accelerate config --config_file=$PATH_TO_ACCELERATE_CONFIG_FILE
+    ```
+    Please make sure you have installed the accelerate package. We have tested our training scripts with the accelerate version 0.29.3.
+
+2. Prepare your training data:
+- [Hypersim](https://github.com/apple/ml-hypersim): 
+    - Download this [script](https://github.com/apple/ml-hypersim/blob/main/contrib/99991/download.py) into your `$PATH_TO_RAW_HYPERSIM_DATA` directory for data downloading.
+    - Run the following command to download the data:
+        ```
+        cd $PATH_TO_RAW_HYPERSIM_DATA
+
+        # Download the tone-mapped images
+        python ./download.py --contains scene_cam_ --contains final_preview --contains tonemap.jpg --silent
+
+        # Download the depth maps
+        python ./download.py --contains scene_cam_ --contains geometry_hdf5 --contains depth_meters --silent
+
+        # Download the normal maps
+        python ./download.py --contains scene_cam_ --contains geometry_hdf5 --contains normal --silent
+        ```
+    - Download the split file from [here](https://github.com/apple/ml-hypersim/blob/main/evermotion_dataset/analysis/metadata_images_split_scene_v1.csv) and put it in the `$PATH_TO_RAW_HYPERSIM_DATA` directory.
+    - Process the data with the command: `bash utils/process_hypersim.sh`.
+- [Virtual KITTI](https://europe.naverlabs.com/proxy-virtual-worlds-vkitti-2/):
+    - Download the [rgb](https://download.europe.naverlabs.com//virtual_kitti_2.0.3/vkitti_2.0.3_rgb.tar), [depth](https://download.europe.naverlabs.com//virtual_kitti_2.0.3/vkitti_2.0.3_depth.tar), and [textgz](https://download.europe.naverlabs.com//virtual_kitti_2.0.3/vkitti_2.0.3_textgt.tar.gz) into the `$PATH_TO_VKITTI_DATA` directory and unzip them.
+    - Make sure the directory structure is as follows:
+        ```
+        SceneX/Y/frames/rgb/Camera_Z/rgb_%05d.jpg
+        SceneX/Y/frames/depth/Camera_Z/depth_%05d.png
+        SceneX/Y/colors.txt
+        SceneX/Y/extrinsic.txt
+        SceneX/Y/intrinsic.txt
+        SceneX/Y/info.txt
+        SceneX/Y/bbox.txt
+        SceneX/Y/pose.txt
+        ```
+        where $X \in \{01, 02, 06, 18, 20\}$ and represent one of 5 different locations.
+        $Y \in \{\texttt{15-deg-left}, \texttt{15-deg-right}, \texttt{30-deg-left}, \texttt{30-deg-right}, \texttt{clone}, \texttt{fog}, \texttt{morning}, \texttt{overcast}, \texttt{rain}, \texttt{sunset}\}$ and represent the different variations.
+        $Z \in [0, 1]$ and represent the left or right camera. 
+        Note that the indexes always start from 0.
+    - Generate the normal maps with the command: `bash utils/depth2normal.sh`.
+3. Run the training command! 🚀
+    - `bash train_scripts/train_lotus_g_{$TASK}.sh` for training Lotus Generative models;
+    - `bash train_scripts/train_lotus_d_{$TASK}.sh` for training Lotus Discriminative models.
+
+## 🕹️ Inference
 ### Testing on your images
 1. Place your images in a directory, for example, under `assets/in-the-wild_example` (where we have prepared several examples). 
 2. Run the inference command: `bash infer.sh`. 
