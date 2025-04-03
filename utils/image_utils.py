@@ -2,7 +2,7 @@ from PIL import Image
 import matplotlib
 import numpy as np
 
-from typing import Union
+from typing import List, Union
 import PIL.Image
 
 import torch
@@ -98,15 +98,15 @@ def resize_max_res(
     return resized_img
 
 def resize_back(
-        img: Union[torch.Tensor, np.ndarray, PIL.Image.Image],
+        img: Union[torch.Tensor, np.ndarray, PIL.Image.Image, List[PIL.Image.Image]],
         target_size: Union[int, tuple[int, int]],
         resample_method: Union[InterpolationMode, int] = InterpolationMode.BILINEAR,
-) -> Union[torch.Tensor, np.ndarray, PIL.Image.Image]:
+) -> Union[torch.Tensor, np.ndarray, PIL.Image.Image, List[PIL.Image.Image]]:
     """
     Resize image to target size.
 
     Args:
-        img (`Union[torch.Tensor, np.ndarray, PIL.Image.Image]`):
+        img (`Union[torch.Tensor, np.ndarray, PIL.Image.Image, List[PIL.Image.Image]]`):
             Image to be resized. 
         target_size (`Union[int, tuple[int, int]]`):
             Target size of the resized image.
@@ -114,7 +114,7 @@ def resize_back(
             Resampling method used to resize images. 
 
     Returns:
-        `Union[torch.Tensor, np.ndarray, PIL.Image.Image]`: Resized image.
+        `Union[torch.Tensor, np.ndarray, PIL.Image.Image, List[PIL.Image.Image]]`: Resized image.
     """
     if isinstance(img, torch.Tensor): # [B, C, H, W]
         resized_img = resize(img, target_size, resample_method, antialias=True)
@@ -127,6 +127,9 @@ def resize_back(
     elif isinstance(img, PIL.Image.Image):
         target_size = (target_size[1], target_size[0])  # PIL uses (width, height)
         resized_img = img.resize(target_size, resample_method)
+    elif isinstance(img, list) and all(isinstance(i, PIL.Image.Image) for i in img):
+        target_size = (target_size[1], target_size[0])  # PIL uses (width, height)
+        resized_img = [i.resize(target_size, resample_method) for i in img]
     return resized_img
 
 def get_pil_resample_method(method_str: str) -> int:
