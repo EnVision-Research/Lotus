@@ -123,7 +123,7 @@ pip install -r requirements.txt
 
 ### Evaluation on benchmark datasets
 1. Prepare benchmark datasets:
-- For **depth** estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-))：
+- For **depth** estimation, you can download the [evaluation datasets (depth)](https://share.phys.ethz.ch/~pf/bingkedata/marigold/evaluation_dataset/) by the following commands (referred to [Marigold](https://github.com/prs-eth/Marigold?tab=readme-ov-file#-evaluation-on-test-datasets-)):
     ```
     cd datasets/eval/depth/
     
@@ -131,7 +131,7 @@ pip install -r requirements.txt
     ```
 - For **normal** estimation, you can download the  [evaluation datasets (normal)](https://drive.google.com/drive/folders/1t3LMJIIrSnCGwOEf53Cyg0lkSXd3M4Hm?usp=drive_link) (`dsine_eval.zip`) into the path `datasets/eval/normal/` and unzip it (referred to [DSINE](https://github.com/baegwangbin/DSINE?tab=readme-ov-file#getting-started)). 
 
-2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (depth or normal) and `[mode]` refers to the mode name (d or g). </br>
+2. Run the evaluation command: `bash eval_scripts/eval-[task]-[mode].sh`, where `[task]` represents the task name (**depth** or **normal**) and `[mode]` refers to the mode name (**g** or **d**). </br>
 (Optional) To reproduce the results presented in our paper, you can set the `--rng_state_path` option in the evaluation command. The RNG state files are available at `./rng_states/`.
 
 ### Choose your model
