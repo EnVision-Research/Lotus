@@ -26,6 +26,8 @@
     <sup>&#9993;</sup>Corresponding author.
 </span>
 
+🔥🔥🔥 **Please also check our latest Lotus-2! Useful links:** [**Project Page**](https://lotus-2.github.io/)**,** [**Github Repo**](https://github.com/EnVision-Research/Lotus-2)**.** 🔥🔥🔥
+
 ![teaser](assets/badges/teaser_1.jpg)
 ![teaser](assets/badges/teaser_2.jpg)
 
